@@ -1,4 +1,4 @@
-function knigthMoves(start, end) {
+function knightMoves(start, end) {
   if (!isValid(start[0], start[1]) || !isValid(end[0], end[1])) {
     return console.log("Position is outside of the board.");
   }
@@ -31,36 +31,28 @@ function knigthMoves(start, end) {
     return neighbours;
   }
 
-  function compareArrays(a, b) {
-    return JSON.stringify(a) === JSON.stringify(b);
-  }
-
   function findAllPathsFrom(start) {
     // Initialize two queues, one for current layer and other for next layer
     let currQueue = [];
     let nextQueue = [];
+
     // Initialize a dictionary to store parent node for each node
     // * each node will have only one parent node
     const prev = {};
 
-    // Add the start node to the current layer queue and add it to prev
+    // Add the start node to the current layer queue and mark it as visited
     currQueue.push(start);
+    prev[JSON.stringify(start)] = null;
     // the value of start node is null because it doesn't have a parent node,
     // and null is used to stop the loop when reconstructing the path
-    prev[JSON.stringify(start)] = null;
-
-    // the visited nodes will be saved in a list
-    let visited = [];
-    visited.push(start);
 
     // while current queue is not empty
-    while (currQueue.length) {
+    while (currQueue.length > 0) {
       let node = currQueue.shift(0);
       let neighbours = getNeighbours(node);
       neighbours.forEach((neighbour) => {
-        let isVisited = visited.find((item) => compareArrays(item, neighbour));
+        let isVisited = prev[JSON.stringify(neighbour)] !== undefined;
         if (!isVisited) {
-          visited.push(neighbour);
           nextQueue.push(neighbour);
           prev[JSON.stringify(neighbour)] = node;
         }
@@ -72,29 +64,21 @@ function knigthMoves(start, end) {
     }
     return prev;
   }
-
-  function reconstructPath(prev, start, end) {
+  function reconstructPath(prev, end) {
     const path = [];
-
     // Start from the end node and follow the parent pointers to the start node
     let currentNode = end;
     while (currentNode !== null) {
-      // add node to the start of path
       path.unshift(currentNode);
-      // set the parent node of current node as current node
       currentNode = prev[JSON.stringify(currentNode)];
     }
-
-    if (compareArrays(path[0], start)) return path;
-    return [];
+    return path;
   }
 
   let prev = findAllPathsFrom(start);
-  let path = reconstructPath(prev, start, end);
-  console.log(
-    `You made it in ${Object.keys(path).length - 1} moves! Here's your path:`
-  );
+  let path = reconstructPath(prev, end);
+  console.log(`You made it in ${path.length - 1} moves! Here's your path:`);
   console.log(path);
 }
 
-knigthMoves([0, 0], [7, 7]);
+knightMoves([3, 3], [4, 3]);
