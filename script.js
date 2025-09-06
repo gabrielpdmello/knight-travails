@@ -1,53 +1,30 @@
 function knigthMoves(start, end) {
-  if (
-    start[0] < 0 ||
-    start[0] > 7 ||
-    start[1] < 0 ||
-    start[1] > 7 ||
-    end[0] < 0 ||
-    end[0] > 7 ||
-    end[1] < 0 ||
-    end[1] > 7
-  ) {
+  if (!isValid(start[0], start[1]) || !isValid(end[0], end[1])) {
     return console.log("Position is outside of the board.");
+  }
+
+  function isValid(x, y) {
+    return x >= 0 && x < 8 && y >= 0 && y < 8;
   }
 
   function getNeighbours(node) {
     let neighbours = [];
+    const moves = [
+      [2, 1],
+      [2, -1],
+      [-2, 1],
+      [-2, -1],
+      [1, 2],
+      [-1, 2],
+      [1, -2],
+      [-1, -2],
+    ];
 
-    // check if the knight can move 2 positions up,
-    // then check if it can move one to the left and/or one to the right
-    if (node[1] <= 5) {
-      if (node[0] > 0) {
-        neighbours.push([node[0] - 1, node[1] + 2]);
-      }
-      if (node[0] < 7) {
-        neighbours.push([node[0] + 1, node[1] + 2]);
-      }
-    }
-    // repeat same algorithm for the right, bottom, and left, respectively
-    if (node[0] <= 5) {
-      if (node[1] < 7) {
-        neighbours.push([node[0] + 2, node[1] + 1]);
-      }
-      if (node[1] > 0) {
-        neighbours.push([node[0] + 2, node[1] - 1]);
-      }
-    }
-    if (node[1] >= 2) {
-      if (node[0] < 7) {
-        neighbours.push([node[0] + 1, node[1] - 2]);
-      }
-      if (node[0] > 0) {
-        neighbours.push([node[0] - 1, node[1] - 2]);
-      }
-    }
-    if (node[0] >= 2) {
-      if (node[1] > 0) {
-        neighbours.push([node[0] - 2, node[1] - 1]);
-      }
-      if (node[1] < 7) {
-        neighbours.push([node[0] - 2, node[1] + 1]);
+    for (let [a, b] of moves) {
+      let nx = node[0] + a;
+      let ny = node[1] + b;
+      if (isValid(nx, ny)) {
+        neighbours.push([nx, ny]);
       }
     }
 
@@ -120,4 +97,4 @@ function knigthMoves(start, end) {
   console.log(path);
 }
 
-knigthMoves([1, 3], [7, 3]);
+knigthMoves([0, 0], [7, 7]);
